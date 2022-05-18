@@ -3,9 +3,11 @@ const path = require('path');
 const {stat} = require('fs/promises');
 
 
-const dirPath=path.join(__dirname, 'secret-folder');
 
-const getFiles = async ()=> {
+const getFiles = async (folder)=> {
+
+  const dirPath=path.join(__dirname, folder);
+  
   let files  = await readdir(dirPath , {withFileTypes: true});
   
   files = files.filter(file => file.isFile());
@@ -19,14 +21,14 @@ const getFiles = async ()=> {
 
   const promises = files.map(file => stat(file.path));
   await Promise.all(promises);
-  
+
   for (let i = 0; i < files.length; i++) {
     files[i].size = (await promises[i]).size;
-    console.log(`${files[i].name} - ${files[i].ext} - ${files[i].size} bytes`);
+    console.log(`${files[i].name} - ${files[i].ext} - ${files[i].size}b`);
   }
   
 };
 
-getFiles();
+getFiles('secret-folder');
 
 
