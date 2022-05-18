@@ -22,8 +22,6 @@ rl.on('line', (line)=>{
     rl.output.write('\nBye!');
     exit();
   }
-  process.on('beforeExit', function() {
-    rl.output.write('\nBye!');
-    exit();
-  });
 });
+// process.on('exit',()=> {rl.output.write('\nBye!');});
+process.on('beforeExit', ()=> {rl.output.write('\nBye!');});
