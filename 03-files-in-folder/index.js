@@ -20,7 +20,7 @@ const getFiles = async (folder)=> {
   });
 
   const promises = files.map(file => stat(file.path));
-  await Promise.all(promises);
+  // await Promise.all(promises);
 
   for (let i = 0; i < files.length; i++) {
     files[i].size = (await promises[i]).size;
