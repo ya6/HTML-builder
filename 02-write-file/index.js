@@ -1,4 +1,3 @@
-console.log('--02--');
 const path = require('path');
 const fs = require('fs');
 
