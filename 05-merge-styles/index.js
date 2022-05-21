@@ -1,6 +1,10 @@
-const { readdir } = require('fs/promises');
 const path = require('path');
-const { readFile, writeFile } = require('fs/promises');
+const { readdir, readFile, writeFile } = require('fs/promises');
+
+const sourceDir = 'styles';
+const distDir = 'project-dist';
+const bundleName = 'bundle.css';
+
 
 //funcs
 const getFiles = async (folder, extFilter = 'css')=> {
@@ -47,8 +51,4 @@ const makeCssBundle =async ()=> {
 
 
 // go
-const sourceDir = 'styles';
-const distDir = 'project-dist';
-const bundleName = 'bundle.css';
-
 makeCssBundle();
