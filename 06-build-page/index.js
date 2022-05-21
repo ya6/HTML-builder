@@ -1,8 +1,5 @@
-console.log('--06--');
-
 const path = require('path');
 const {mkdir, readdir, readFile, writeFile, copyFile, rmdir } = require('fs/promises');
-
 
 const templateName = 'template.html';
 
@@ -27,6 +24,7 @@ const makeDir = async (distDir) => {
 };
 
 const getFilesOnExt = async (folder, extFilter)=> {
+
   const dirPath = path.join(__dirname, folder);
   let files = await readdir(dirPath , {withFileTypes: true});
   files = files.filter(file => file.isFile());
@@ -41,12 +39,14 @@ const getFilesOnExt = async (folder, extFilter)=> {
 };
 
 const getOnlyName = (url)=> {
+
   const baseName = path.basename(url);
   const name = baseName.slice(0, baseName.length - path.extname(baseName).length);
   return name;
 };
 
 const getSeparateDataFromFiles = async (arrOfFiles) =>{
+  
   const files = {};
   for  (const file of arrOfFiles) {
     const fileData = await readFile(file, { encoding: 'UTF8'});
@@ -75,49 +75,96 @@ const writeArrOfDadaInFile = async (distDir, bundleName, arrOfData) => {
 
 const copyDir = async (src, dest) => {
 
-  const entries = await readdir(src, {withFileTypes:true});
-  await mkdir(dest, {recursive: true});
-  for(let entry of entries) {
-    const srcPath = path.join(src,entry.name);
-    const destPath = path.join(dest,entry.name);
-    if(entry.isDirectory()) {
-      await copyDir(srcPath, destPath);
-    } else {
-      await copyFile(srcPath, destPath);
-    }
+  let entries = null;
+  try {  
+    entries = await readdir(src, {withFileTypes:true});
+  } catch (error) {
+    console.log('no assets?');
+    return;
   }
+  
+  if (entries) {
+    await mkdir(dest, {recursive: true});
+    for(let entry of entries) {
+      const srcPath = path.join(src,entry.name);
+      const destPath = path.join(dest,entry.name);
+      if(entry.isDirectory()) {
+        await copyDir(srcPath, destPath);
+      } else {
+        await copyFile(srcPath, destPath);
+      }
+    }
+    
+  }
+
 };
 
 const makeBundle = async ()=> {
+  
+  try {
+    await rmdir( path.join(__dirname, distDir), {recursive: true});  
+  } catch (error) {
+    true; //trick
+  }
+
   await makeDir(distDir);
+  
   //css 
-  const cssFiles = await getFilesOnExt(cssSourceFolder, 'css');
-  const arrOfCssData = await getArrOfDada(cssFiles);
-  writeArrOfDadaInFile(distDir, cssBundleName, arrOfCssData);
+  let cssFiles = null;
+  try {
+    cssFiles = await getFilesOnExt(cssSourceFolder, 'css');
+    if (cssFiles) {
+      const arrOfCssData = await getArrOfDada(cssFiles);
+      writeArrOfDadaInFile(distDir, cssBundleName, arrOfCssData);
+    }
+  
+  } catch (error) {
+    console.log('no styles?');
+  }
+
+
+  
   
   //html components
-  const htmlFiles = await getFilesOnExt(htmlSourceFolder, 'html');
-  const objOfHtmlData = await getSeparateDataFromFiles(htmlFiles);
+  let htmlFiles = null;
+  let objOfHtmlData = {};
+  try {
+    htmlFiles = await getFilesOnExt(htmlSourceFolder, 'html');
+    if (htmlFiles) {
+      objOfHtmlData = await getSeparateDataFromFiles(htmlFiles);
+     
+    }
+  
+  } catch (error) {
+    console.log('no components?');
+  }
+
  
   // template
-  const objTemplate = await getSeparateDataFromFiles([path.join(__dirname, templateName)]);
-  const templateInArr = objTemplate[getOnlyName(templateName)].split('\n');
+  let objTemplate = null;
+
+  try {
+    objTemplate = await getSeparateDataFromFiles([path.join(__dirname, templateName)]);
+    const templateInArr = objTemplate[getOnlyName(templateName)].split('\n');
   
-  const bundledTemplateInArr = templateInArr.map(line=> {
+    const bundledTemplateInArr = templateInArr.map(line=> {
     
-    if (line.substring(line.length-2) === '}}') {
-      let component = line.trim();
-      component = component.substring(2, component.length-2);
-      return objOfHtmlData[component];
-    }
-    return line;  
-  });
+      if (line.substring(line.length-2) === '}}') {
+        let component = line.trim();
+        component = component.substring(2, component.length-2);  
+        return objOfHtmlData[component] || line;
+      }
+      return line;  
+    });
   
-  writeArrOfDadaInFile(distDir, htmlBundleName, bundledTemplateInArr);
+    writeArrOfDadaInFile(distDir, htmlBundleName, bundledTemplateInArr);  
+    
+  } catch (error) {
+    console.log('no template?');  
+  }
+  
   
   //assets
-  await rmdir( path.join(__dirname, distDir, assetsDir), {recursive: true});
-
   await copyDir(path.join(__dirname, assetsDir), path.join(__dirname, distDir, assetsDir));
   
   console.log('Done!');
