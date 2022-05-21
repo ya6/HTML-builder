@@ -93,10 +93,8 @@ const copyDir = async (src, dest) => {
       } else {
         await copyFile(srcPath, destPath);
       }
-    }
-    
+    }    
   }
-
 };
 
 const makeBundle = async ()=> {
@@ -117,13 +115,10 @@ const makeBundle = async ()=> {
       const arrOfCssData = await getArrOfDada(cssFiles);
       writeArrOfDadaInFile(distDir, cssBundleName, arrOfCssData);
     }
-  
+
   } catch (error) {
     console.log('no styles?');
   }
-
-
-  
   
   //html components
   let htmlFiles = null;
@@ -132,7 +127,6 @@ const makeBundle = async ()=> {
     htmlFiles = await getFilesOnExt(htmlSourceFolder, 'html');
     if (htmlFiles) {
       objOfHtmlData = await getSeparateDataFromFiles(htmlFiles);
-     
     }
   
   } catch (error) {
@@ -145,20 +139,33 @@ const makeBundle = async ()=> {
 
   try {
     objTemplate = await getSeparateDataFromFiles([path.join(__dirname, templateName)]);
-    const templateInArr = objTemplate[getOnlyName(templateName)].split('\n');
+    if (objTemplate) {
   
-    const bundledTemplateInArr = templateInArr.map(line=> {
-    
-      if (line.substring(line.length-2) === '}}') {
-        let component = line.trim();
-        component = component.substring(2, component.length-2);  
-        return objOfHtmlData[component] || line;
-      }
-      return line;  
-    });
+      const templateInArr = objTemplate[getOnlyName(templateName)].split('\n');
   
-    writeArrOfDadaInFile(distDir, htmlBundleName, bundledTemplateInArr);  
+      const bundledTemplateInArr = templateInArr.map(line=> {
     
+        if (line.substring(line.length-2) === '}}') {
+
+          let component = line.trim();
+          component = component.substring(2, component.length-2);
+
+          // add spaces 
+          if (objOfHtmlData[component]) {
+            const offset = ' '.repeat(line.split(' ').length - 1);
+            let arrComponent = objOfHtmlData[component].split('\n');
+            arrComponent = arrComponent.map(el => offset + el);
+            const strComponent = arrComponent.join('\n');
+            return strComponent;
+          }
+          return  line;
+        }
+        return line;  
+      });
+  
+      writeArrOfDadaInFile(distDir, htmlBundleName, bundledTemplateInArr);  
+    }
+
   } catch (error) {
     console.log('no template?');  
   }
