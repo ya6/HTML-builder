@@ -22,5 +22,10 @@ rl.on('line', (line)=>{
   }
   writer.write(line+'\n');
 });
-// process.on('exit',()=> {rl.output.write('\nBye!');});
 process.on('beforeExit', ()=> {rl.output.write('\nBye!');});
+// rl.on('SIGINT', () => {
+//   rl.close();
+// });
+// rl.on('close', () => {
+//   rl.output.write('\nBye!')
+// });

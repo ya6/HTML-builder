@@ -1,5 +1,5 @@
 const path = require('path');
-const {mkdir, readdir, readFile, writeFile, copyFile, rmdir} = require('fs/promises');
+const {mkdir, readdir, readFile, writeFile, copyFile, rm} = require('fs/promises');
 
 const templateName = 'template.html';
 const htmlSourceFolder = 'components';
@@ -19,7 +19,7 @@ const makeDir = async (distDir) => {
 };
 const delDir = async(distDir) => {
   try {
-    await rmdir(path.join(__dirname, distDir), {recursive: true});
+    await rm(path.join(__dirname, distDir), {recursive: true});
   } catch (err) {
     true;
   }
