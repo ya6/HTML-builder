@@ -19,9 +19,9 @@ const makeDir = async (distDir) => {
 };
 const delDir = async(distDir) => {
   try {
-    await rm(path.join(__dirname, distDir), {recursive: true});
+    await rm(path.join(__dirname, distDir), {recursive: true, force: true});
   } catch (err) {
-    true;
+    true; // if del not empty dir
   }
 };
 
@@ -34,7 +34,7 @@ const getFilesOnExt = async (folder, extFilter)=> {
     const ext = path.extname(file).slice(1);
     return extFilter.toLowerCase() === ext.toLowerCase();
   });
-  files.sort((a, b)=>a.charCodeAt(2) - b.charCodeAt(2)); // trick for css order
+  files.sort((a, b)=>a.charCodeAt(2) - b.charCodeAt(2)); // for css order
   files = files.map(file => path.join(dirPath, file));
   return files;
 };
@@ -144,7 +144,7 @@ const makeBundle = async ()=> {
           let component = line.trim();
           component = component.substring(2, component.length-2);
 
-          // add spaces 
+          // add spaces and insert component
           if (objOfHtmlData[component]) {
             const offset = ' '.repeat(line.split(' ').length - 1);
             let arrComponent = objOfHtmlData[component].split('\n');

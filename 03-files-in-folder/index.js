@@ -15,7 +15,7 @@ const getFiles = async (folder)=> {
     return {name: file.name.slice(0, file.name.length - path.extname(file.name).length),
       ext: path.extname(file.name).slice(1),
       size: 0,
-      path: path.join(__dirname,  'secret-folder', file.name)};
+      path: path.join(__dirname, 'secret-folder', file.name)};
   });
 
   const promises = files.map(file => stat(file.path));
