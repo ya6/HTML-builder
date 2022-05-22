@@ -16,11 +16,11 @@ let writer = fs.createWriteStream(fn, {
 rl.output.write('\nHi!\nTo finish, input: exit or press Ctrl+C\n\nInput data:\n');
 // rl.input.pipe(writer);
 rl.on('line', (line)=>{
-  writer.write(line+'\n');
   if (line ==='exit') {
     rl.output.write('\nBye!');
     exit();
   }
+  writer.write(line+'\n');
 });
 // process.on('exit',()=> {rl.output.write('\nBye!');});
 process.on('beforeExit', ()=> {rl.output.write('\nBye!');});

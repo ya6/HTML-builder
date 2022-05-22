@@ -3,7 +3,6 @@ const path = require('path');
 const {stat} = require('fs/promises');
 
 
-
 const getFiles = async (folder)=> {
 
   const dirPath=path.join(__dirname, folder);
@@ -20,11 +19,10 @@ const getFiles = async (folder)=> {
   });
 
   const promises = files.map(file => stat(file.path));
-  // await Promise.all(promises);
 
   for (let i = 0; i < files.length; i++) {
     files[i].size = (await promises[i]).size;
-    console.log(`${files[i].name} - ${files[i].ext} - ${files[i].size}b`);
+    console.log(`${files[i].name} - ${files[i].ext} - ${files[i].size}`);
   }
   
 };
