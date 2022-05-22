@@ -26,7 +26,6 @@ const delDir = async(distDir) => {
 };
 
 const getFilesOnExt = async (folder, extFilter)=> {
-
   const dirPath = path.join(__dirname, folder);
   let files = await readdir(dirPath , {withFileTypes: true});
   files = files.filter(file => file.isFile());
@@ -35,13 +34,12 @@ const getFilesOnExt = async (folder, extFilter)=> {
     const ext = path.extname(file).slice(1);
     return extFilter.toLowerCase() === ext.toLowerCase();
   });
+  files.sort((a, b)=>a.charCodeAt(2) - b.charCodeAt(2)); // trick for css order
   files = files.map(file => path.join(dirPath, file));
-  
   return files;
 };
 
 const getOnlyName = (url)=> {
-
   const baseName = path.basename(url);
   const name = baseName.slice(0, baseName.length - path.extname(baseName).length);
   return name;
