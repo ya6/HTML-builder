@@ -2,6 +2,7 @@ const path = require('path');
 const {mkdir, readdir, readFile, writeFile, copyFile, rm} = require('fs/promises');
 
 const templateName = 'template.html';
+const htmlSourceFolder = 'components';
 const cssSourceFolder = 'styles';
 const distDir = 'project-dist';
 const assetsDir = 'assets';
@@ -121,7 +122,8 @@ const makeBundle = async ()=> {
   let htmlFiles = null;
   let objOfHtmlData = {};
   try {
-    if(+Object.keys(htmlFiles) === 0) throw new Error ;
+    htmlFiles = await getFilesOnExt(htmlSourceFolder, 'html');
+    if(htmlFiles.length === 0) throw new Error ;
     if (htmlFiles) {
       objOfHtmlData = await getSeparateDataFromFiles(htmlFiles);
     }
