@@ -2,7 +2,6 @@ const path = require('path');
 const {mkdir, readdir, readFile, writeFile, copyFile, rm} = require('fs/promises');
 
 const templateName = 'template.html';
-const htmlSourceFolder = 'components';
 const cssSourceFolder = 'styles';
 const distDir = 'project-dist';
 const assetsDir = 'assets';
