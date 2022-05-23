@@ -77,6 +77,7 @@ const copyDir = async (source, dest) => {
   let entries = null;
   try {  
     entries = await readdir(source, {withFileTypes:true});
+    if(entries.length === 0) throw new Error ;
   } catch (err) {
     console.log('no assets?');
     return;
@@ -104,9 +105,11 @@ const makeBundle = async ()=> {
   
   //css 
   let cssFiles = null;
+
   try {
     cssFiles = await getFilesOnExt(cssSourceFolder, 'css');
-    if (cssFiles) {
+    if(cssFiles.length === 0) throw new Error ;
+    if (cssFiles && cssFiles.length) {
       const arrOfCssData = await getArrOfDadaFromFiles(cssFiles);
       writeArrOfDadaInFile(distDir, cssBundleName, arrOfCssData);
     }
@@ -119,7 +122,7 @@ const makeBundle = async ()=> {
   let htmlFiles = null;
   let objOfHtmlData = {};
   try {
-    htmlFiles = await getFilesOnExt(htmlSourceFolder, 'html');
+    if(+Object.keys(htmlFiles) === 0) throw new Error ;
     if (htmlFiles) {
       objOfHtmlData = await getSeparateDataFromFiles(htmlFiles);
     }
@@ -165,6 +168,7 @@ const makeBundle = async ()=> {
   }
   
   //assets
+  
   await copyDir(path.join(__dirname, assetsDir), path.join(__dirname, distDir, assetsDir));
   
   console.log('Done!');
