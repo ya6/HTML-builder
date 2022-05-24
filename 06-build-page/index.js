@@ -138,12 +138,12 @@ const makeBundle = async ()=> {
   try {
     objTemplate = await getSeparateDataFromFiles([path.join(__dirname, templateName)]);
     if (objTemplate) {
-  
+      
       const templateInArr = objTemplate[getOnlyName(templateName)].split('\n');
       
       let bundledTemplateInArr = templateInArr.map(line=> {
-    
-        if (line.substring(line.length-2) === '}}') {
+        // if (line.substring(line.length-2) === '}}') {
+        if (line.indexOf('{{') != -1 && line.indexOf('}}') != -1) {
 
           let component = line.trim();
           component = component.substring(2, component.length-2);
