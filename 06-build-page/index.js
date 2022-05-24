@@ -1,5 +1,6 @@
 const path = require('path');
 const {mkdir, readdir, readFile, writeFile, copyFile, rm} = require('fs/promises');
+const { log } = require('console');
 
 const templateName = 'template.html';
 const htmlSourceFolder = 'components';
@@ -141,7 +142,7 @@ const makeBundle = async ()=> {
   
       const templateInArr = objTemplate[getOnlyName(templateName)].split('\n');
       
-      const bundledTemplateInArr = templateInArr.map(line=> {
+      let bundledTemplateInArr = templateInArr.map(line=> {
     
         if (line.substring(line.length-2) === '}}') {
 
@@ -160,6 +161,8 @@ const makeBundle = async ()=> {
         }
         return line;  
       });
+
+      bundledTemplateInArr = bundledTemplateInArr.filter(Boolean);
   
       writeArrOfDadaInFile(distDir, htmlBundleName, bundledTemplateInArr);  
     }
