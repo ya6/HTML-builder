@@ -1,6 +1,5 @@
 const path = require('path');
 const {mkdir, readdir, readFile, writeFile, copyFile, rm} = require('fs/promises');
-const { log } = require('console');
 
 const templateName = 'template.html';
 const htmlSourceFolder = 'components';
@@ -157,7 +156,7 @@ const makeBundle = async ()=> {
             const strComponent = arrComponent.join('\n');
             return strComponent;
           }
-          return ;
+          return;
         }
         return line;  
       });
