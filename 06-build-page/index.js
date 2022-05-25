@@ -127,60 +127,78 @@ const makeBundle = async ()=> {
     if (htmlFiles) {
       objOfHtmlData = await getSeparateDataFromFiles(htmlFiles);
     }
-  
-  } catch (err) {
-    console.log('no components?');
-  }
 
-  // template
-  let arrTemplate = null;
- 
-
-  try {
-    // objTemplate = await getSeparateDataFromFiles([path.join(__dirname, templateName)]);
-    arrTemplate = await getArrOfDadaFromFiles([path.join(__dirname, templateName)]);
-    // console.log('==> ', arrTemplate);
-    
+    let   arrTemplate = await getArrOfDadaFromFiles([path.join(__dirname, templateName)]);
     if (arrTemplate) {
       let _template = arrTemplate[0];
       
       for (const key in objOfHtmlData) {
         _template = _template.replace(`{{${key}}}`, objOfHtmlData[key]);
-      }
-      
-      // const templateInArr = _template.split('\n');
-      // console.log(templateInArr);
-      // let bundledTemplateInArr = templateInArr.map(line=> {
-      //   // if (line.substring(line.length-2) === '}}') {
-      //   if (line.indexOf('{{') != -1 && line.indexOf('}}') != -1) {
-
-      //     let component = line.trim();
-      //     component = component.substring(2, component.length-2);
-      //     // add spaces and insert component
-      //     if (objOfHtmlData[component]) {
-      //       const offset = ' '.repeat(line.split(' ').length - 1);
-      //       let arrComponent = objOfHtmlData[component].split('\n');
-      //       arrComponent = arrComponent.map(el => offset + el);
-      //       const strComponent = arrComponent.join('\n');
-      //       return strComponent;
-      //     }
-      //     return;
-      //   }
-      //   return line;  
-      // });
-
-      // bundledTemplateInArr = bundledTemplateInArr.filter(Boolean);
+      } 
       const reg = /\{\{\w+\}\}/;
       _template = _template.replace(reg, '');
+
       const bundledTemplateInArr = [_template];
-  
-      // writeArrOfDadaInFile(distDir, htmlBundleName, bundledTemplateInArr);  
+      
       writeArrOfDadaInFile(distDir, htmlBundleName, bundledTemplateInArr);  
     }
 
+
+    
+  
   } catch (err) {
-    console.log('no template?');  
+    console.log('no components or template?');
   }
+
+  // template
+  // let arrTemplate = null;
+ 
+
+  // try {
+  // objTemplate = await getSeparateDataFromFiles([path.join(__dirname, templateName)]);
+  // arrTemplate = await getArrOfDadaFromFiles([path.join(__dirname, templateName)]);
+  // console.log('==> ', arrTemplate);
+    
+  // if (arrTemplate) {
+  //   let _template = arrTemplate[0];
+      
+  //   for (const key in objOfHtmlData) {
+  //     _template = _template.replace(`{{${key}}}`, objOfHtmlData[key]);
+  //   }
+      
+  // const templateInArr = _template.split('\n');
+  // console.log(templateInArr);
+  // let bundledTemplateInArr = templateInArr.map(line=> {
+  //   // if (line.substring(line.length-2) === '}}') {
+  //   if (line.indexOf('{{') != -1 && line.indexOf('}}') != -1) {
+
+  //     let component = line.trim();
+  //     component = component.substring(2, component.length-2);
+  //     // add spaces and insert component
+  //     if (objOfHtmlData[component]) {
+  //       const offset = ' '.repeat(line.split(' ').length - 1);
+  //       let arrComponent = objOfHtmlData[component].split('\n');
+  //       arrComponent = arrComponent.map(el => offset + el);
+  //       const strComponent = arrComponent.join('\n');
+  //       return strComponent;
+  //     }
+  //     return;
+  //   }
+  //   return line;  
+  // });
+
+  // bundledTemplateInArr = bundledTemplateInArr.filter(Boolean);
+  // const reg = /\{\{\w+\}\}/;
+  // _template = _template.replace(reg, '');
+  // const bundledTemplateInArr = [_template];
+  
+  // writeArrOfDadaInFile(distDir, htmlBundleName, bundledTemplateInArr);  
+  // writeArrOfDadaInFile(distDir, htmlBundleName, bundledTemplateInArr);  
+  // }
+
+  // } catch (err) {
+  // console.log('no template?');  
+  // }
   
   //assets
   
