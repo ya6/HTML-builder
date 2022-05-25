@@ -134,7 +134,7 @@ const makeBundle = async ()=> {
     let _template = arrTemplate[0];
       
     for (const key in objOfHtmlData) {
-      _template = _template.replace(`{{${key}}}`, objOfHtmlData[key]);
+      _template = _template.replaceAll(`{{${key}}}`, objOfHtmlData[key]);
     } 
     const reg = /\{\{\w+\}\}/gi;
     _template = _template.replace(reg, '');
