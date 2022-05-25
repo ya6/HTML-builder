@@ -123,27 +123,25 @@ const makeBundle = async ()=> {
   let objOfHtmlData = {};
   try {
     htmlFiles = await getFilesOnExt(htmlSourceFolder, 'html');
-    if(htmlFiles.length === 0) throw new Error ;
-    if (htmlFiles) {
-      objOfHtmlData = await getSeparateDataFromFiles(htmlFiles);
-    }
+    if(!htmlFiles || htmlFiles.length === 0) throw new Error ;
+   
+    objOfHtmlData = await getSeparateDataFromFiles(htmlFiles);
+   
 
-    let   arrTemplate = await getArrOfDadaFromFiles([path.join(__dirname, templateName)]);
-    if (arrTemplate) {
-      let _template = arrTemplate[0];
+    let arrTemplate = await getArrOfDadaFromFiles([path.join(__dirname, templateName)]);
+    if(!arrTemplate || arrTemplate.length === 0) throw new Error ;
+    
+    let _template = arrTemplate[0];
       
-      for (const key in objOfHtmlData) {
-        _template = _template.replace(`{{${key}}}`, objOfHtmlData[key]);
-      } 
-      const reg = /\{\{\w+\}\}/;
-      _template = _template.replace(reg, '');
+    for (const key in objOfHtmlData) {
+      _template = _template.replace(`{{${key}}}`, objOfHtmlData[key]);
+    } 
+    const reg = /\{\{\w+\}\}/gi;
+    _template = _template.replace(reg, '');
 
-      const bundledTemplateInArr = [_template];
+    const bundledTemplateInArr = [_template];
       
-      writeArrOfDadaInFile(distDir, htmlBundleName, bundledTemplateInArr);  
-    }
-
-
+    writeArrOfDadaInFile(distDir, htmlBundleName, bundledTemplateInArr);  
     
   
   } catch (err) {
