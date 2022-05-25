@@ -133,38 +133,48 @@ const makeBundle = async ()=> {
   }
 
   // template
-  let objTemplate = null;
+  let arrTemplate = null;
+ 
 
   try {
-    objTemplate = await getSeparateDataFromFiles([path.join(__dirname, templateName)]);
-    if (objTemplate) {
-      const _template = objTemplate[getOnlyName(templateName)];
-
-      const  separator =  _template.indexOf('\r\n') === -1 ? '\n' : '\r\n';
-      const templateInArr = objTemplate[getOnlyName(templateName)].split(separator);
+    // objTemplate = await getSeparateDataFromFiles([path.join(__dirname, templateName)]);
+    arrTemplate = await getArrOfDadaFromFiles([path.join(__dirname, templateName)]);
+    // console.log('==> ', arrTemplate);
+    
+    if (arrTemplate) {
+      let _template = arrTemplate[0];
       
-      let bundledTemplateInArr = templateInArr.map(line=> {
-        // if (line.substring(line.length-2) === '}}') {
-        if (line.indexOf('{{') != -1 && line.indexOf('}}') != -1) {
+      for (const key in objOfHtmlData) {
+        _template = _template.replace(`{{${key}}}`, objOfHtmlData[key]);
+      }
+      
+      // const templateInArr = _template.split('\n');
+      // console.log(templateInArr);
+      // let bundledTemplateInArr = templateInArr.map(line=> {
+      //   // if (line.substring(line.length-2) === '}}') {
+      //   if (line.indexOf('{{') != -1 && line.indexOf('}}') != -1) {
 
-          let component = line.trim();
-          component = component.substring(2, component.length-2);
+      //     let component = line.trim();
+      //     component = component.substring(2, component.length-2);
+      //     // add spaces and insert component
+      //     if (objOfHtmlData[component]) {
+      //       const offset = ' '.repeat(line.split(' ').length - 1);
+      //       let arrComponent = objOfHtmlData[component].split('\n');
+      //       arrComponent = arrComponent.map(el => offset + el);
+      //       const strComponent = arrComponent.join('\n');
+      //       return strComponent;
+      //     }
+      //     return;
+      //   }
+      //   return line;  
+      // });
 
-          // add spaces and insert component
-          if (objOfHtmlData[component]) {
-            const offset = ' '.repeat(line.split(' ').length - 1);
-            let arrComponent = objOfHtmlData[component].split(separator);
-            arrComponent = arrComponent.map(el => offset + el);
-            const strComponent = arrComponent.join(separator);
-            return strComponent;
-          }
-          return;
-        }
-        return line;  
-      });
-
-      bundledTemplateInArr = bundledTemplateInArr.filter(Boolean);
+      // bundledTemplateInArr = bundledTemplateInArr.filter(Boolean);
+      const reg = /\{\{\w+\}\}/;
+      _template = _template.replace(reg, '');
+      const bundledTemplateInArr = [_template];
   
+      // writeArrOfDadaInFile(distDir, htmlBundleName, bundledTemplateInArr);  
       writeArrOfDadaInFile(distDir, htmlBundleName, bundledTemplateInArr);  
     }
 
