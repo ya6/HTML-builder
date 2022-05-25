@@ -138,8 +138,10 @@ const makeBundle = async ()=> {
   try {
     objTemplate = await getSeparateDataFromFiles([path.join(__dirname, templateName)]);
     if (objTemplate) {
-      
-      const templateInArr = objTemplate[getOnlyName(templateName)].split('\n');
+      const _template = objTemplate[getOnlyName(templateName)];
+
+      const  separator =  _template.indexOf('\r\n') === -1 ? '\n' : '\r\n';
+      const templateInArr = objTemplate[getOnlyName(templateName)].split(separator);
       
       let bundledTemplateInArr = templateInArr.map(line=> {
         // if (line.substring(line.length-2) === '}}') {
@@ -151,9 +153,9 @@ const makeBundle = async ()=> {
           // add spaces and insert component
           if (objOfHtmlData[component]) {
             const offset = ' '.repeat(line.split(' ').length - 1);
-            let arrComponent = objOfHtmlData[component].split('\n');
+            let arrComponent = objOfHtmlData[component].split(separator);
             arrComponent = arrComponent.map(el => offset + el);
-            const strComponent = arrComponent.join('\n');
+            const strComponent = arrComponent.join(separator);
             return strComponent;
           }
           return;
